@@ -25,6 +25,8 @@ interface Event {
     category: string
     date: string
     status: string
+    description?: string | undefined
+    price?: number
 }
 
 // Define the props for EventList
