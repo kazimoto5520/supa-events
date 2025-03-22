@@ -105,10 +105,11 @@ export default function SignUp() {
     console.log(data)
 
     // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/dashboard")
-    }, 3000)
+    // setTimeout(() => {
+    //   setIsLoading(false)
+    //   router.push("/dashboard")
+    // }, 3000)
+    router.push("/signup/activate-account")
   }
 
   return (
@@ -389,26 +390,9 @@ export default function SignUp() {
 
               <div className="mt-4 grid grid-cols-1 gap-3 w-full">
                 <Button variant="outline" className="w-full" onClick={() => console.log("Sign up with Google")}>
-                  {/* <Image
-                    src="/placeholder.svg?height=16&width=16"
-                    alt="Google"
-                    width={16}
-                    height={16}
-                    className="mr-2"
-                  /> */}
                   <GoogleIcon size={18}/>
                   Google
                 </Button>
-                {/* <Button variant="outline" className="w-full" onClick={() => console.log("Sign up with Facebook")}>
-                  <Image
-                    src="/placeholder.svg?height=16&width=16"
-                    alt="Facebook"
-                    width={16}
-                    height={16}
-                    className="mr-2"
-                  />
-                  Facebook
-                </Button> */}
               </div>
             </CardFooter>
           </Card>
