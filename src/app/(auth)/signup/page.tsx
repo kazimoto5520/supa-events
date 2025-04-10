@@ -5,7 +5,6 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -26,55 +25,30 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
-import { GoogleIcon } from "hugeicons-react"
-
-// Form validation schema
-const signUpSchema = z
-  .object({
-    firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-    middleName: z.string().optional(),
-    lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
-    email: z.string().email({ message: "Please enter a valid email address." }),
-    password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-    confirmPassword: z.string(),
-    phone: z.string().min(10, { message: "Please enter a valid phone number." }),
-    accountType: z.enum(["customer", "vendor"]),
-    termsAccepted: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions.",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  })
+import { useMutation } from "@tanstack/react-query"
+import { ApiError, AuthResponse, RegisterRequest } from "@/services/auth/type"
+import { registerUser } from "@/services/auth/authenticationService"
+import { toast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast"
+import Cookies from 'js-cookie';
+import { signUpSchema } from "@/services/auth/validation"
 
 type SignUpFormValues = z.infer<typeof signUpSchema>
 
 export default function SignUp() {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [passwordStrength, setPasswordStrength] = useState<number>(0)
   const router = useRouter()
 
   const form = useForm<SignUpFormValues>({
     resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      phone: "",
-      accountType: "customer",
-      termsAccepted: false,
-    },
   })
+
+  console.log("Form errors:", form.formState.errors)
 
   function calculatePasswordStrength(password: string): number {
     if (!password) return 0
@@ -98,18 +72,90 @@ export default function SignUp() {
     setPasswordStrength(calculatePasswordStrength(password))
   }
 
+  const mutation = useMutation<AuthResponse, ApiError, RegisterRequest>({
+    mutationFn: (userData: RegisterRequest) => registerUser(userData),
+    onSuccess: (response) => {
+      console.log("Account created successful:", response)
+      toast({
+        variant: "success",
+        title: "Success",
+        description: "Account created successful",
+        duration: 5000,
+        action: <ToastAction altText="Close">Close</ToastAction>,
+      });
+      Cookies.set("supa.events.co.tz.access", response?.data?.accessToken)
+      // router.push("/signin/otp");
+      if(response.data.user.accountType === "customer"){
+        router.push("/client/dashboard")
+      }else if(response.data.user.accountType === "vendor"){
+        router.push("/vendor/dashboard")
+      }else{
+        router.push("/signin");
+      }
+    },
+    onError: (error) => {
+      const errorData = error?.response?.data;
+      console.error("Login failed:", errorData);
+
+      if (errorData?.validationErrors?.length) {
+        toast({
+          variant: "destructive",
+          title: "Validation error",
+          description: errorData.validationErrors.join(", "),
+          duration: 5000,
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+      } else if (errorData?.error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorData.error,
+          duration: 5000,
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+      } else if (errorData?.errorDescription) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorData.errorDescription,
+          duration: 5000,
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+
+      } else if (errorData?.message) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorData.message,
+          duration: 5000,
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An error occurred",
+          duration: 5000,
+          action: <ToastAction altText="Close">Close</ToastAction>,
+        });
+      }
+    },
+  });
+
   function onSubmit(data: SignUpFormValues) {
-    setIsLoading(true)
+    console.log("Form submitted:", data)
+    const userData: RegisterRequest = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+      phoneNumber: data.phoneNumber,
+      accountType: data.accountType,
+      customerType: data.accountType,
+    }
 
-    // Here you would typically send the data to your backend API
-    console.log(data)
-
-    // Simulate API call
-    // setTimeout(() => {
-    //   setIsLoading(false)
-    //   router.push("/dashboard")
-    // }, 3000)
-    router.push("/signup/activate-account")
+    mutation.mutate(userData)
+  
   }
 
   return (
@@ -293,7 +339,7 @@ export default function SignUp() {
 
                     <FormField
                       control={form.control}
-                      name="phone"
+                      name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Phone Number</FormLabel>
@@ -361,8 +407,8 @@ export default function SignUp() {
                     />
                   </div>
 
-                  <Button className="w-full" type="submit" disabled={isLoading} size="lg">
-                    {isLoading ? (
+                  <Button className="w-full" type="submit" disabled={mutation.isPending} size="lg">
+                    {mutation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Creating account...
@@ -377,24 +423,6 @@ export default function SignUp() {
                 </form>
               </Form>
             </CardContent>
-
-            <CardFooter className="flex flex-col">
-              <div className="relative w-full my-2">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-xs text-muted-foreground">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3 w-full">
-                <Button variant="outline" className="w-full" onClick={() => console.log("Sign up with Google")}>
-                  <GoogleIcon size={18}/>
-                  Google
-                </Button>
-              </div>
-            </CardFooter>
           </Card>
         </div>
       </main>

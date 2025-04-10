@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import Image from "next/image"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -21,11 +20,9 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Checkbox } from "@/components/ui/checkbox"
-import { GoogleIcon } from "hugeicons-react"
 
 // Form validation schema
 const signInSchema = z.object({
@@ -226,41 +223,6 @@ export default function SignInPage() {
                 </form>
               </Form>
             </CardContent>
-
-            <CardFooter className="flex flex-col">
-              <div className="relative w-full my-2">
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-xs text-muted-foreground">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 gap-3 w-full">
-                <Button variant="outline" className="w-full" onClick={() => console.log("Sign in with Google")}>
-                  {/* <Image
-                    src="/placeholder.svg?height=16&width=16"
-                    alt="Google"
-                    width={16}
-                    height={16}
-                    className="mr-2"
-                  /> */}
-                  <GoogleIcon size={20}/>
-                  Google
-                </Button>
-                {/* <Button variant="outline" className="w-full" onClick={() => console.log("Sign in with Facebook")}>
-                  <Image
-                    src="/placeholder.svg?height=16&width=16"
-                    alt="Facebook"
-                    width={16}
-                    height={16}
-                    className="mr-2"
-                  />
-                  Facebook
-                </Button> */}
-              </div>
-            </CardFooter>
           </Card>
         </div>
       </main>
