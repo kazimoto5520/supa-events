@@ -1,8 +1,10 @@
-import type {Metadata} from "next";
+import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import {VendorSidebar} from "@/components/dashboard/vendor/VendorSidebar";
-import {VendorTopHeader} from "@/components/dashboard/vendor/VendorTopHeader";
+import { VendorSidebar } from "@/components/dashboard/vendor/VendorSidebar";
+import { VendorTopHeader } from "@/components/dashboard/vendor/VendorTopHeader";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "../../fonts/GeistVF.woff",
@@ -27,19 +29,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <body
+      <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-    <div className="flex flex-col h-screen">
-      <VendorTopHeader/>
-      <div className="flex flex-1 overflow-hidden">
-        <VendorSidebar/>
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
-      </div>
-    </div>
-    </body>
+      >
+        <ReactQueryProvider>
+          <div className="flex flex-col h-screen">
+            <Toaster />
+            <VendorTopHeader />
+            <div className="flex flex-1 overflow-hidden">
+              <VendorSidebar />
+              <main className="flex-1 overflow-y-auto p-6">
+                {children}
+              </main>
+            </div>
+
+          </div>
+        </ReactQueryProvider>
+      </body>
     </html>
   );
 }

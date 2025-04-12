@@ -1,3 +1,5 @@
+"use client"
+
 import Link from 'next/link'
 import {ArrowDown01, Search} from 'lucide-react'
 import Image from "next/image";
@@ -11,8 +13,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 export function VendorTopHeader() {
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        Cookies.remove("supa.events.co.tz.access");
+        router.replace("/signin");
+      };
     return (
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b">
             <div className="flex items-center">
@@ -59,8 +69,7 @@ export function VendorTopHeader() {
                             <DropdownMenuSeparator/>
                             <DropdownMenuItem>Profile</DropdownMenuItem>
                             <DropdownMenuItem>Billing</DropdownMenuItem>
-                            <DropdownMenuItem>Team</DropdownMenuItem>
-                            <DropdownMenuItem>Subscription</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
 
