@@ -37,7 +37,7 @@ export default function EventsPage() {
                     }}
                 />
             )}
-            <EventList onEdit={(event) => setEditingEvent(event)} />
+            {/* <EventList onEdit={(event) => setEditingEvent(event)} /> */}
         </div>
     )
 }

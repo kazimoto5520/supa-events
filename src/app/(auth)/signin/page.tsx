@@ -129,7 +129,7 @@ export default function SignInPage() {
             <span className="text-xl font-semibold">Supa Events</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Don't have an account?</span>
+            <span className="text-sm text-muted-foreground">Don{"'"}t have an account?</span>
             <Button variant="outline" asChild>
               <Link href="/signup">
                 Sign up <ChevronRight className="ml-1 h-4 w-4" />
