@@ -111,6 +111,8 @@ export default function EventsPage() {
     });
 
     const handleBookingSubmit = (data: BookingFormValues) => {
+        console.log("Booking data:", data);
+        console.log("Selected event:", selectedEvent);
         const payload = {
             eventId: selectedEvent?.rowId,
             eventStartDate: new Date(data.eventStartDate),
@@ -165,19 +167,19 @@ export default function EventsPage() {
                                     <label htmlFor={`startDate-${event.rowId}`} className="block text-sm font-medium">
                                         Start Date
                                     </label>
-                                    <Input id={`startDate-${event.rowId}`} type="date" />
+                                    <Input id={`startDate-${event.rowId}`} type="date" {...form.register("eventStartDate", { required: true })} />
                                 </div>
                                 <div>
                                     <label htmlFor={`endDate-${event.rowId}`} className="block text-sm font-medium">
                                         End Date
                                     </label>
-                                    <Input id={`endDate-${event.rowId}`} type="date" />
+                                    <Input id={`endDate-${event.rowId}`} type="date" {...form.register("eventEndDate", { required: true })} />
                                 </div>
                                 <div>
                                     <label htmlFor={`time-${event.rowId}`} className="block text-sm font-medium">
                                         Time
                                     </label>
-                                    <Input id={`time-${event.rowId}`} type="time" />
+                                    <Input id={`time-${event.rowId}`} type="time" {...form.register("eventTime", { required: true })} />
                                 </div>
                                 <Button type="submit" className="w-full" disabled={bookingMutation.isPending}>
                                     {bookingMutation.isPending ? "Booking..." : "Book Event"}

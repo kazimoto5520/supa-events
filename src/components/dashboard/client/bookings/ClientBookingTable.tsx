@@ -111,6 +111,38 @@ export default function ClientBookingTable() {
             header: "Payment Ref",
             cell: ({ row }) => <div>{row.original.paymentReference}</div>,
         },
+        {
+            accessorKey: "eventStartDate",
+            header: "Event Start Date",
+            cell: ({ row }) => <div>{new Date(row.original.eventStartDate).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: "eventEndDate",
+            header: "Event End Date",
+            cell: ({ row }) => <div>{new Date(row.original.eventEndDate).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: "eventTime",
+            header: "Event Time",
+            cell: ({ row }) => <div>{row.original.eventTime}</div>,
+        },
+        {
+            accessorKey: "actions",
+            header: "Actions",
+            cell: ({ row }) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm">
+                            <ViewIcon size={16} />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>Pay</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
     ];
 
     const {

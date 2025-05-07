@@ -38,7 +38,7 @@ export function VendorSidebar() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/vendor/attendees" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
+                        <Link href="/vendor/analytics" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <ChartBubble01Icon size={20}/>
                             <span>Analytics</span>
                         </Link>

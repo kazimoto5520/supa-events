@@ -62,3 +62,16 @@ export const getAllBookings = async (accessToken: string | undefined): Promise<B
   );
   return response.data;
 };
+
+export const getAllVendorBookings = async (accessToken: string | undefined): Promise<BookingResponse> => {
+    const response: AxiosResponse<BookingResponse> = await axiosInstance.get<BookingResponse>(
+      process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/vendors/bookings",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  };

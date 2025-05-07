@@ -28,129 +28,148 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft01Icon, ArrowRight01Icon, Search01Icon, ViewIcon } from "hugeicons-react";
 import { useRouter } from "next/navigation";
 import { DateRangePicker } from "./DateRangePicker";
-
-interface ActiveStandingOrder {
-    id: number;
-    debitAcc: string;
-    creditAcc: string;
-    receiverAddress: string;
-    amount: number;
-    currency: string;
-    narrations: string;
-    occurrence: string;
-    runDate: string;
-    status: string;
-    createdBy: string;
-}
-
-const activeStandingOrders: ActiveStandingOrder[] = [
-    {
-        id: 1,
-        debitAcc: "123456789",
-        creditAcc: "987654321",
-        receiverAddress: "receiver@example.com",
-        amount: 5000,
-        currency: "USD",
-        narrations: "Monthly subscription",
-        occurrence: "Monthly",
-        runDate: "2025-04-01",
-        status: "Active",
-        createdBy: "Admin",
-    },
-    {
-        id: 2,
-        debitAcc: "223344556",
-        creditAcc: "665544332",
-        receiverAddress: "receiver2@example.com",
-        amount: 10000,
-        currency: "EUR",
-        narrations: "Loan repayment",
-        occurrence: "Weekly",
-        runDate: "2025-03-25",
-        status: "Pending",
-        createdBy: "User123",
-    },
-];
-
-const columns: ColumnDef<ActiveStandingOrder>[] = [
-    {
-        accessorKey: "id",
-        header: "S/N",
-        cell: ({ row }) => <div>{row.index + 1}</div>,
-    },
-    {
-        accessorKey: "debitAcc",
-        header: "Debit Acc",
-        cell: ({ row }) => <div>{row.getValue("debitAcc")}</div>,
-    },
-    {
-        accessorKey: "creditAcc",
-        header: "Credit Acc",
-        cell: ({ row }) => <div>{row.getValue("creditAcc")}</div>,
-    },
-    {
-        accessorKey: "receiverAddress",
-        header: "Receiver Address",
-        cell: ({ row }) => <div>{row.getValue("receiverAddress")}</div>,
-    },
-    {
-        accessorKey: "amount",
-        header: "Amount",
-        cell: ({ row }) => <div>{(row.getValue("amount") as number).toLocaleString()}</div>,
-    },
-    {
-        accessorKey: "currency",
-        header: "Currency",
-        cell: ({ row }) => <div>{row.getValue("currency")}</div>,
-    },
-    {
-        accessorKey: "narrations",
-        header: "Narrations",
-        cell: ({ row }) => <div>{row.getValue("narrations")}</div>,
-    },
-    {
-        accessorKey: "occurrence",
-        header: "Occurrence",
-        cell: ({ row }) => <div>{row.getValue("occurrence")}</div>,
-    },
-    {
-        accessorKey: "runDate",
-        header: "Run Date",
-        cell: ({ row }) => <div>{row.getValue("runDate")}</div>,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => <div>{row.getValue("status")}</div>,
-    },
-    {
-        accessorKey: "createdBy",
-        header: "Created By",
-        cell: ({ row }) => <div>{row.getValue("createdBy")}</div>,
-    },
-];
-
+import { useQuery } from "@tanstack/react-query";
+import { getAllVendorBookings } from "@/services/booking/bookingService";
+import { formatMoney } from "@/lib/utils";
+import { Booking } from "@/services/booking/type";
+import Cookies from "js-cookie";
 
 export default function VendorBookingTable() {
     const [rowSelection, setRowSelection] = React.useState({});
+    const accessToken = Cookies.get("supa.events.co.tz.access");
+
+    const columns: ColumnDef<Booking>[] = [
+        {
+            accessorKey: "sn",
+            header: "S/N",
+            cell: ({ row }) => <div>{row.index + 1}</div>,
+        },
+        {
+            accessorKey: "event.name",
+            header: "Event Name",
+            cell: ({ row }) => <div>{row.original.event?.name}</div>,
+        },
+        {
+            accessorKey: "user.fullName",
+            header: "Customer Name",
+            cell: ({ row }) => {
+                const user = row.original.user;
+                return <div>{`${user.firstName} ${user.middleName ?? ""} ${user.lastName}`.trim()}</div>;
+            },
+        },
+        {
+            accessorKey: "user.phoneNumber",
+            header: "Phone Number",
+            cell: ({ row }) => <div>{row.original.user?.phoneNumber}</div>,
+        },
+        {
+            accessorKey: "quantity",
+            header: "Tickets",
+            cell: ({ row }) => <div>{row.original.quantity}</div>,
+        },
+        {
+            accessorKey: "totalAmount",
+            header: "Total Amount",
+            cell: ({ row }) => <div>{formatMoney(parseFloat(row.original.totalAmount))}</div>,
+        },
+        {
+            accessorKey: "status",
+            header: "Status",
+            cell: ({ row }) => {
+                const status = row.original.status as "P" | "C" | "F";
+                const statusStyles: Record<"P" | "C" | "F", string> = {
+                    P: "bg-yellow-100 text-yellow-800",
+                    C: "bg-green-100 text-green-800",
+                    F: "bg-red-100 text-red-800",
+                };
+                return (
+                    <div
+                        className={`px-2 py-1 rounded-full text-sm font-medium ${statusStyles[status] || "bg-gray-100 text-gray-800"}`}
+                    >
+                        {status === "P" ? "Pending" : status === "C" ? "Complete" : "Failed"}
+                    </div>
+                );
+            }
+
+        },
+        {
+            accessorKey: "bookingDate",
+            header: "Booking Date",
+            cell: ({ row }) => <div>{new Date(row.original.bookingDate).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: "paymentDate",
+            header: "Payment Date",
+            cell: ({ row }) => (
+                <div>
+                    {row.original.paymentDate ? new Date(row.original.paymentDate).toLocaleDateString() : "N/A"}
+                </div>
+            ),
+        },
+        {
+            accessorKey: "paymentR</div>eference",
+            header: "Payment Ref",
+            cell: ({ row }) => <div>{row.original.paymentReference}</div>,
+        },
+        {
+            accessorKey: "eventStartDate",
+            header: "Event Start Date",
+            cell: ({ row }) => <div>{new Date(row.original.eventStartDate).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: "eventEndDate",
+            header: "Event End Date",
+            cell: ({ row }) => <div>{new Date(row.original.eventEndDate).toLocaleDateString()}</div>,
+        },
+        {
+            accessorKey: "eventTime",
+            header: "Event Time",
+            cell: ({ row }) => <div>{row.original.eventTime}</div>,
+        },
+        {
+            accessorKey: "actions",
+            header: "Actions",
+            cell: ({ row }) => (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm">
+                            <ViewIcon size={16} />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem>Pay</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            ),
+        },
+    ];
+
+    const {
+        data: bookings,
+        isLoading: isBookingsLoading,
+        isError: isBookingsError,
+    } = useQuery({
+        queryKey: ["bookings"],
+        queryFn: () => getAllVendorBookings(accessToken)
+    });
 
     const table = useReactTable({
-        data: activeStandingOrders,
+        data: bookings?.data ?? [],
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
-
     return (
         <div className="bg-white p-4 border rounded-lg">
             <div className="flex items-center justify-between py-4">
-                <h2 className="text-lg font-semibold text-gray-800">Standing Orders History List</h2>
+                <h2 className="text-lg font-semibold text-gray-800">All Bookings</h2>
                 <div className="flex gap-4 items-center">
                     <div className="relative max-sm:w-full">
                         <Input
                             placeholder="Search..."
-                            value={String(table.getColumn("batchName")?.getFilterValue() ?? "")}
+                            value={String(table.getColumn("status")?.getFilterValue() ?? "")}
                             onChange={(event) =>
-                                table.getColumn("batchName")?.setFilterValue(event.target.value)
+                                table.getColumn("status")?.setFilterValue(event.target.value)
                             }
                             className="pr-8 bg-gray-100 max-sm:w-full"
                         />

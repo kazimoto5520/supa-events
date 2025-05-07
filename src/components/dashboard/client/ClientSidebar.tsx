@@ -32,13 +32,13 @@ export function ClientSidebar() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/client/attendees" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
+                        <Link href="/client/payments" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <Wallet01Icon size={20}/>
                             <span>Payments</span>
                         </Link>
                     </li>
                     <li>
-                        <Link href="/client/attendees" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
+                        <Link href="/client/ai" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <AiBeautifyIcon size={20}/>
                             <span>Supa Events</span>
                         </Link>
