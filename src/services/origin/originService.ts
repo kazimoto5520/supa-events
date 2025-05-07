@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { Event, EventRequest, EventResponse } from "./type";
+import { EventResponse } from "./type";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_BACKEND_URL,
@@ -36,39 +36,11 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export const getAllEvents = async (accessToken: string | undefined): Promise<EventResponse> => {
+export const getOriginAllEvents = async (): Promise<EventResponse> => {
   const response: AxiosResponse<EventResponse> = await axiosInstance.get<EventResponse>(
-    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/vendors/events",
+    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/origin/events",
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
-
-export const getAllEventsForClients = async (accessToken: string | undefined): Promise<EventResponse> => {
-  const response: AxiosResponse<EventResponse> = await axiosInstance.get<EventResponse>(
-    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/clients/events",
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  return response.data;
-};
-
-export const createEvent = async (accessToken: string | undefined, request: EventRequest): Promise<Event> => {
-  const response: AxiosResponse<Event> = await axiosInstance.post<Event>(
-    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/vendors/events",
-    request,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     }

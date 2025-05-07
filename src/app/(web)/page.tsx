@@ -1,9 +1,22 @@
+"use client";
+
 import { EventType } from "@/components/web/event-type";
 import Footer from "@/components/web/footer";
 import Hero from "@/components/web/hero";
 import Navbar from "@/components/web/navbar";
+import { getOriginAllEvents } from "@/services/origin/originService";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Home() {
+  const {
+    data: originEvents,
+    isLoading: isOriginEventsLoading,
+    isError: isOriginEventsError,
+  } = useQuery({
+    queryKey: ["origin-events"],
+    queryFn: () => getOriginAllEvents()
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -22,36 +35,20 @@ export default function Home() {
               </p>
             </div>
             <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <EventType
-                title="Weddings"
-                description="Create the wedding of your dreams with our expert planning and coordination."
-                imageSrc="/event1.jpg?height=200&width=400"
-              />
-              <EventType
-                title="Corporate Events"
-                description="Impress clients and motivate teams with our professional corporate event services."
-                imageSrc="/event2.jpg?height=200&width=400"
-              />
-              <EventType
-                title="Birthday Parties"
-                description="Celebrate another year with a birthday party that's tailored to your style."
-                imageSrc="/event3.jpg?height=200&width=400"
-              />
-              <EventType
-                title="Graduations"
-                description="Mark this important milestone with a celebration that honors your achievements."
-                imageSrc="/event2.jpg?height=200&width=400"
-              />
-              <EventType
-                title="Concerts"
-                description="From intimate gigs to large-scale productions, we've got your music event covered."
-                imageSrc="/event1.jpg?height=200&width=400"
-              />
-              <EventType
-                title="Memorial Services"
-                description="Honor your loved ones with a dignified and memorable service."
-                imageSrc="/event3.jpg?height=200&width=400"
-              />
+              {originEvents?.data && originEvents.data.length > 0 ? (
+                originEvents.data.map((event, index) => (
+                  <EventType
+                    key={index}
+                    title={event.name}
+                    description={event.description}
+                    amount={event.amount}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center text-gray-500">
+                  No events available at the moment. Please check back later.
+                </div>
+              )}
             </div>
           </div>
         </section>
