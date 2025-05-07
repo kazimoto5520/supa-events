@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { BookingRequest, CreateBookingResponse } from "./type";
+import { BookingRequest, BookingResponse, CreateBookingResponse } from "./type";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_BACKEND_URL,
@@ -40,6 +40,19 @@ export const bookEvent = async (accessToken: string | undefined, request: Bookin
   const response: AxiosResponse<CreateBookingResponse> = await axiosInstance.post<CreateBookingResponse>(
     process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/clients/booking",
     request,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const getAllBookings = async (accessToken: string | undefined): Promise<BookingResponse> => {
+  const response: AxiosResponse<BookingResponse> = await axiosInstance.get<BookingResponse>(
+    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/clients/booking",
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

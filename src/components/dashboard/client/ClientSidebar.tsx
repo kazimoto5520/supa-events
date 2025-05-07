@@ -26,7 +26,7 @@ export function ClientSidebar() {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/client/attendees" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
+                        <Link href="/client/bookings" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <CursorPointer01Icon size={20}/>
                             <span>My Bookings</span>
                         </Link>

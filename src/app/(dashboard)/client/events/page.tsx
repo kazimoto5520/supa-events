@@ -20,6 +20,7 @@ import { ApiError } from '@/services/auth/type'
 import { BookingRequest, CreateBookingResponse } from '@/services/booking/type'
 import { bookEvent } from '@/services/booking/bookingService'
 import { useForm } from 'react-hook-form'
+import { formatMoney } from '@/lib/utils'
 
 type BookingFormValues = {
     eventStartDate: string;
@@ -152,7 +153,7 @@ export default function EventsPage() {
                             <h2 className="text-lg font-semibold mt-2">{event.name}</h2>
                             <p className="text-sm text-gray-600">{event.description}</p>
                             <DialogTrigger asChild>
-                                <Button className="mt-4 w-full">Book Now</Button>
+                                <Button className="mt-4 w-full hover:bg-red-500">{formatMoney(event.amount)} </Button>
                             </DialogTrigger>
                         </div>
                         <DialogContent>
