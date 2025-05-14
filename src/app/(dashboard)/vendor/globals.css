@@ -2,8 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400; /* Regular */
+  src: url('../../../../public/fonts/PlusJakartaSans.otf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500; /* Medium */
+  src: url('../../../../public/fonts/PlusJakartaSans-Medium.otf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600; /* SemiBold */
+  src: url('../../../../public/fonts/PlusJakartaSans-SemiBold.otf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700; /* Bold */
+  src: url('../../../../public/fonts/PlusJakartaSans-Bold.otf');
+  font-display: swap;
+}
+
+.plus-jakarta-sans-font {
+  font-family: 'Plus Jakarta Sans';
+}
+
+.light-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 300;
+}
+
+.regular-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 400;
+}
+
+.medium-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 500;
+}
+
+.semibold-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 600;
+}
+
+.bold-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 700;
+}
+
+.extrabold-text {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 800;
 }
 
 
