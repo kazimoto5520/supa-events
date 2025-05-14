@@ -10,17 +10,12 @@ export default function Home() {
     return (
         <div className="space-y-8">
             <h1 className="text-2xl font-bold">Dashboard</h1>
-            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                <BookingsOverview/>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-2">
                 <RevenueChart/>
                 <PopularEvents/>
             </div>
-            <div className="grid gap-8 md:grid-cols-2">
-                <UpcomingEventsCalendar/>
-                <div className="space-y-8">
+            <div className="grid gap-8 md:grid-cols-1">
                     <RecentActivities/>
-                    <UserAcquisitionChart/>
-                </div>
             </div>
         </div>
     )

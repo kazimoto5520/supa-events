@@ -51,7 +51,7 @@ export function PaymentHistory() {
                     {filteredPayments.map((payment) => (
                         <TableRow key={payment.id}>
                             <TableCell className="font-medium">{payment.id}</TableCell>
-                            <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                            <TableCell>TZS {payment.amount.toFixed(2)}</TableCell>
                             <TableCell>{payment.date}</TableCell>
                             <TableCell>
                                 <Badge variant={

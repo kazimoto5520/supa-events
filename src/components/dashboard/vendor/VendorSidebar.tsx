@@ -37,12 +37,12 @@ export function VendorSidebar() {
                             <span>Wallet</span>
                         </Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link href="/vendor/analytics" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <ChartBubble01Icon size={20}/>
                             <span>Analytics</span>
                         </Link>
-                    </li>
+                    </li> */}
                     <li>
                         <Link href="/vendor/settings" className="flex items-center space-x-2 p-2 rounded hover:bg-gray-200">
                             <Settings01Icon size={20}/>

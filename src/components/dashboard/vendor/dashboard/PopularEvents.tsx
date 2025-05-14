@@ -28,7 +28,7 @@ export function PopularEvents() {
                             <TableRow key={event.name}>
                                 <TableCell>{event.name}</TableCell>
                                 <TableCell className="text-right">{event.bookings}</TableCell>
-                                <TableCell className="text-right">${event.revenue.toLocaleString()}</TableCell>
+                                <TableCell className="text-right">TZS {event.revenue.toLocaleString()}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

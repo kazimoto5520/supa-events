@@ -27,9 +27,9 @@ const formSchema = z.object({
     amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
         message: "Amount must be a positive number",
     }),
-    method: z.enum(["paypal", "bank_transfer"]),
+    method: z.enum(["mpesa", "mix_by_yas", "halopesa", "airtelmoney"]),
     accountDetails: z.string().min(1, {
-        message: "Account details are required",
+        message: "Account number or phone number is required",
     }),
 })
 
@@ -40,7 +40,7 @@ export function WithdrawEarnings() {
         resolver: zodResolver(formSchema),
         defaultValues: {
             amount: "",
-            method: "paypal",
+            method: "mpesa",
             accountDetails: "",
         },
     })
@@ -53,7 +53,7 @@ export function WithdrawEarnings() {
             setIsSubmitting(false)
             // toast({
             //     title: "Withdrawal Request Submitted",
-            //     description: `$${values.amount} will be sent to your ${values.method === 'paypal' ? 'PayPal' : 'bank'} account.`,
+            //     description: `$${values.amount} will be sent to your ${values.method} account.`,
             // })
             form.reset()
         }, 2000)
@@ -91,8 +91,10 @@ export function WithdrawEarnings() {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="paypal">PayPal</SelectItem>
-                                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                                    <SelectItem value="mpesa">MPESA</SelectItem>
+                                    <SelectItem value="mix_by_yas">Mix By Yas</SelectItem>
+                                    <SelectItem value="halopesa">HaloPesa</SelectItem>
+                                    <SelectItem value="airtelmoney">AirtelMoney</SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormDescription>
@@ -107,14 +109,12 @@ export function WithdrawEarnings() {
                     name="accountDetails"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Account Details</FormLabel>
+                            <FormLabel>Account Number / Phone Number</FormLabel>
                             <FormControl>
-                                <Input placeholder="Enter account details" {...field} />
+                                <Input placeholder="Enter account number or phone number" {...field} />
                             </FormControl>
                             <FormDescription>
-                                {form.watch("method") === "paypal"
-                                    ? "Enter your PayPal email address."
-                                    : "Enter your bank account details."}
+                                Enter your account number or phone number.
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
@@ -127,4 +127,3 @@ export function WithdrawEarnings() {
         </Form>
     )
 }
-
