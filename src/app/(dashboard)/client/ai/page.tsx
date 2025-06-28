@@ -53,7 +53,7 @@ export default function ClientAIPage() {
             </Card>
           </div>
 
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>User Acquisition Analysis</CardTitle>
               <CardDescription>Understanding how and when users engage with events</CardDescription>
@@ -61,7 +61,7 @@ export default function ClientAIPage() {
             <CardContent className="h-[300px]">
               <UserAcquisitionChart />
             </CardContent>
-          </Card>
+          </Card> */}
         </TabsContent>
 
         <TabsContent value="recommendations" className="space-y-4">

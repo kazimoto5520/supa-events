@@ -6,6 +6,7 @@ export interface Event {
     user: UserDetailsResponse;
     category: CategoryResponse;
     status: string;
+    createdAt: string;
 }
 
 export interface UserDetailsResponse {

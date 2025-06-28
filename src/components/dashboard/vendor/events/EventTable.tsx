@@ -159,7 +159,10 @@ export default function EventTable() {
     ];
 
     const eventList = React.useMemo(() => {
-        return Array.isArray(events?.data) ? events.data : [];
+        const list = Array.isArray(events?.data) ? events.data : [];
+        return [...list].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
     }, [events]);
 
 

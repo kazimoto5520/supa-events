@@ -53,6 +53,7 @@ export default function SignInPage() {
         action: <ToastAction altText="Close">Close</ToastAction>,
       });
       Cookies.set("supa.events.co.tz.access", response?.data?.accessToken)
+      Cookies.set("supa.events.co.tz.id", response?.data?.user?.rowId)
       // router.push("/signin/otp");
       if(response.data.user.accountType === "customer"){
         router.push("/client/dashboard")

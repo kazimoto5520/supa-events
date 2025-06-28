@@ -32,6 +32,7 @@ export interface Booking {
     eventStartDate: string; // ISO string
     eventEndDate: string;   // ISO string
     eventTime: string;
+    createdAt: string;
 }
 
 export interface EventResponse {

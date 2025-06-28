@@ -8,6 +8,7 @@ import { CLientRecentBookings } from "@/components/dashboard/client/dashboard/cl
 import { ClientUpcomingEvents } from "@/components/dashboard/client/dashboard/client-upcoming-events"
 import { ClientPopularEvents } from "@/components/dashboard/client/dashboard/client-popular-events"
 import { CalendarDateRangePicker } from "@/components/dashboard/client/dashboard/date-range-picker"
+import ClientCardStats from "@/components/dashboard/client/dashboard/client-card-stats"
 
 export const metadata: Metadata = {
   title: "Dashboard | Client Portal",
@@ -24,50 +25,7 @@ export default function ClientDashboard() {
         </p>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 w-full">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-              <Ticket className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-muted-foreground">+2 from last month</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
-              <CalendarDays className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">4</div>
-              <p className="text-xs text-muted-foreground">Next event in 3 days</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Spent</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">TZS 1,248,000.50</div>
-              <p className="text-xs text-muted-foreground">+$350.00 from last month</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Event Categories</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">5</div>
-              <p className="text-xs text-muted-foreground">Music, Tech, Food, Sports, Art</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <ClientCardStats />
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

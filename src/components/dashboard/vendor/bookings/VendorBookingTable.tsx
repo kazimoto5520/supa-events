@@ -154,8 +154,15 @@ export default function VendorBookingTable() {
         queryFn: () => getAllVendorBookings(accessToken)
     });
 
+    const bookingsList = React.useMemo(() => {
+        const list = Array.isArray(bookings?.data) ? bookings.data : [];
+        return [...list].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    }, [bookings]);
+
     const table = useReactTable({
-        data: bookings?.data ?? [],
+        data: bookingsList,
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
