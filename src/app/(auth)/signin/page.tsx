@@ -54,6 +54,8 @@ export default function SignInPage() {
       });
       Cookies.set("supa.events.co.tz.access", response?.data?.accessToken)
       Cookies.set("supa.events.co.tz.id", response?.data?.user?.rowId)
+      Cookies.set("supa.events.co.tz.type", response?.data?.user?.accountType)
+      Cookies.set("supa.events.co.tz.username", response?.data?.user?.firstName + " " + response?.data?.user?.lastName)
       // router.push("/signin/otp");
       if(response.data.user.accountType === "customer"){
         router.push("/client/dashboard")

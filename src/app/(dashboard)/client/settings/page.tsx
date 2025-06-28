@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Card,
@@ -12,8 +14,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { getUser } from "@/services/user/user-service";
 
 const ClientSettingsPage = () => {
+  const accessToken = Cookies.get("supa.events.co.tz.access");
+
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useQuery({
+    queryKey: ["get-user"],
+    queryFn: () => getUser(accessToken)
+  });
+
   return (
     <div className="w-full py-10 px-4">
       <Card>
@@ -41,11 +57,11 @@ const ClientSettingsPage = () => {
               <form className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your name" defaultValue="John Doe" />
+                  <Input id="name" placeholder="Your name" value={user?.data?.firstName + " " + user?.data?.lastName} />
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="Your email" defaultValue="john@example.com" />
+                  <Input id="email" type="email" placeholder="Your email" value={user?.data?.email} />
                 </div>
                 <Button type="submit" className="mt-2">Update Profile</Button>
               </form>

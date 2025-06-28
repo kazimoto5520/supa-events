@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
+import { AccountSummary } from '@/services/account/type'
 
 // Mock data (replace with actual data fetching in a real application)
 const mockPayments = [
@@ -21,13 +22,19 @@ const mockPayments = [
     { id: 'TRX005', amount: 1500, date: '2024-02-20', status: 'Completed' },
 ]
 
-export function PaymentHistory() {
+interface PaymentHistoryProps {
+    payments: AccountSummary[] | undefined;
+    isLoading: boolean;
+    isError: boolean;
+}
+
+export function PaymentHistory({ payments, isLoading, isError }: PaymentHistoryProps) {
     const [searchTerm, setSearchTerm] = useState('')
 
-    const filteredPayments = mockPayments.filter(payment =>
-        payment.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.date.includes(searchTerm)
-    )
+    const filteredPayments = Array.isArray(payments) ? payments.filter(payment =>
+        payment.rowId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.lastTransactionAt?.includes(searchTerm)
+    ) : []
 
     return (
         <div className="space-y-4">
@@ -48,18 +55,15 @@ export function PaymentHistory() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {filteredPayments.map((payment) => (
-                        <TableRow key={payment.id}>
-                            <TableCell className="font-medium">{payment.id}</TableCell>
-                            <TableCell>TZS {payment.amount.toFixed(2)}</TableCell>
-                            <TableCell>{payment.date}</TableCell>
+                    {filteredPayments?.map((payment) => (
+                        <TableRow key={payment.rowId}>
+                            <TableCell className="font-medium">{payment.rowId}</TableCell>
+                            <TableCell>TZS {Number(payment.totalDeposits.toFixed(2)) + Number(payment.totalWithdrawals.toFixed(2))}</TableCell>
+                            <TableCell>{payment.lastTransactionAt ? new Date(payment.lastTransactionAt).toLocaleDateString() : new Date().toLocaleDateString()}</TableCell>
                             <TableCell>
-                                <Badge variant={
-                                    payment.status === 'Completed' ? 'success' :
-                                        payment.status === 'Pending' ? 'warning' :
-                                            'destructive'
-                                }>
-                                    {payment.status}
+                                <Badge variant={"success"}>
+                                    {/* {payment.status} */}
+                                    Completed
                                 </Badge>
                             </TableCell>
                         </TableRow>

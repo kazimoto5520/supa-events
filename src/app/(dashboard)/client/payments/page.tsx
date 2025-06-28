@@ -5,13 +5,41 @@ import { PaymentHistory } from "@/components/dashboard/vendor/wallet/PaymentHist
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from 'react'
+import Cookies from "js-cookie"
+import { useQuery } from '@tanstack/react-query'
+import { getAccountDetails, getAccountSummaries } from '@/services/account/account-service'
 
 export default function ClientPaymentsPage() {
     const [activeTab, setActiveTab] = useState("deposit")
+    const accessToken = Cookies.get("supa.events.co.tz.access");
 
-    // Example data, replace with real data as needed
-    const accountNumber = "000033300000"
-    const walletBalance = "TZS 1,500,000.00"
+    const {
+        data: accountDetails,
+        isLoading: isAccountDetailsLoading,
+        isError: isAccountDetailsError,
+    } = useQuery({
+        queryKey: ["account-details"],
+        queryFn: () => getAccountDetails(accessToken)
+    });
+
+    const {
+        data: accountSummary,
+        isLoading: isAccountSummaryLoading,
+        isError: isAccountSummaryError,
+    } = useQuery({
+        queryKey: ["account-summaries"],
+        queryFn: () => getAccountSummaries(accessToken)
+    });
+
+    const account = accountDetails?.data;
+
+    if (isAccountDetailsLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isAccountDetailsError || !account) {
+        return <div>Failed to load account details</div>;
+    }
 
     return (
         <div className="space-y-8">
@@ -23,7 +51,7 @@ export default function ClientPaymentsPage() {
                         <CardDescription>Your wallet account number</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-xl font-mono">{accountNumber}</span>
+                        <span className="text-xl font-mono">{account?.accountNumber}</span>
                     </CardContent>
                 </Card>
                 <Card>
@@ -32,7 +60,7 @@ export default function ClientPaymentsPage() {
                         <CardDescription>Current balance in your wallet</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-xl font-bold">{walletBalance}</span>
+                        <span className="text-xl font-bold">{account?.balance}</span>
                     </CardContent>
                 </Card>
             </div>
@@ -51,7 +79,7 @@ export default function ClientPaymentsPage() {
                             <ClientDepositForm />
                         </TabsContent>
                         <TabsContent value="history">
-                            <PaymentHistory />
+                            <PaymentHistory payments={accountSummary?.data} isLoading={isAccountSummaryLoading} isError={isAccountSummaryError} />
                         </TabsContent>
                     </Tabs>
                 </CardContent>
