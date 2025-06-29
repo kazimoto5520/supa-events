@@ -1,13 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+"use client";
 
-const activities = [
-    { user: "John Doe", action: "Booked", event: "Summer Music Festival", time: "2 hours ago" },
-    { user: "Jane Smith", action: "Cancelled", event: "Yoga Retreat", time: "5 hours ago" },
-    { user: "Mike Johnson", action: "Registered", event: "Tech Conference 2024", time: "1 day ago" },
-    { user: "Emily Brown", action: "Reviewed", event: "Food & Wine Expo", time: "2 days ago" },
-]
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { formatMoney } from "@/lib/utils";
+import { getAllVendorBookings } from "@/services/booking/bookingService";
+import { useQuery } from "@tanstack/react-query";
+import { formatDistanceToNow } from "date-fns";
+import Cookies from "js-cookie"
 
 export function RecentActivities() {
+    const accessToken = Cookies.get("supa.events.co.tz.access");
+
+    const {
+        data: bookings,
+        isLoading: isBookingsLoading,
+        isError: isBookingsError,
+    } = useQuery({
+        queryKey: ["bookings"],
+        queryFn: () => getAllVendorBookings(accessToken)
+    });
+
+const bookingList = bookings?.data.slice(0, 5) || [];
+
     return (
         <Card>
             <CardHeader>
@@ -15,7 +28,7 @@ export function RecentActivities() {
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
-                    {activities.map((activity, index) => (
+                    {bookingList.map((activity, index) => (
                         <li key={index} className="flex items-start space-x-4">
                             <div className="bg-primary rounded-full p-2">
                                 <svg
@@ -34,12 +47,12 @@ export function RecentActivities() {
                                 </svg>
                             </div>
                             <div className="flex-1">
-                                <p className="text-sm font-medium">{activity.user}</p>
+                                <p className="text-sm font-medium">{activity?.user?.firstName + " " + activity?.user?.lastName}</p>
                                 <p className="text-xs text-muted-foreground">
-                                    {activity.action} {activity.event}
+                                    {formatMoney(Number(activity.totalAmount))} • {activity.event.name}
                                 </p>
                             </div>
-                            <p className="text-xs text-muted-foreground">{activity.time}</p>
+                            <p className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(activity.bookingDate), { addSuffix: true })}</p>
                         </li>
                     ))}
                 </ul>

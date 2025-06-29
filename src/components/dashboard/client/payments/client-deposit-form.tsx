@@ -22,6 +22,13 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { ApiError } from '@/services/auth/type'
+import { ApiDepositResponse, DepositRequest } from '@/services/account/type'
+import { makeClientDeposit } from '@/services/account/account-service'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from '@/hooks/use-toast'
+import { ToastAction } from '@/components/ui/toast'
+import Cookies from "js-cookie"
 
 const formSchema = z.object({
     amount: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
@@ -35,6 +42,7 @@ const formSchema = z.object({
 
 const ClientDepositForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const accessToken = Cookies.get("supa.events.co.tz.access");
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -45,18 +53,78 @@ const ClientDepositForm = () => {
         },
     })
 
+    const mutation = useMutation<ApiDepositResponse, ApiError, DepositRequest>({
+        mutationFn: (request: DepositRequest) => makeClientDeposit(accessToken, request),
+        onSuccess: (response) => {
+            console.log("Transaction successful:", response)
+            toast({
+                variant: "success",
+                title: "Success",
+                description: "Transaction successful",
+                duration: 5000,
+                action: <ToastAction altText="Close">Close</ToastAction>,
+            });
+
+            form.reset();
+            
+        },
+        onError: (error) => {
+            const errorData = error?.response?.data;
+            console.error("Transaction failed:", errorData);
+
+            if (errorData?.validationErrors?.length) {
+                toast({
+                    variant: "destructive",
+                    title: "Validation error",
+                    description: errorData.validationErrors.join(", "),
+                    duration: 5000,
+                    action: <ToastAction altText="Close">Close</ToastAction>,
+                });
+            } else if (errorData?.error) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: errorData.error,
+                    duration: 5000,
+                    action: <ToastAction altText="Close">Close</ToastAction>,
+                });
+            } else if (errorData?.errorDescription) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: errorData.errorDescription,
+                    duration: 5000,
+                    action: <ToastAction altText="Close">Close</ToastAction>,
+                });
+
+            } else if (errorData?.message) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: errorData.message,
+                    duration: 5000,
+                    action: <ToastAction altText="Close">Close</ToastAction>,
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "An error occurred",
+                    duration: 5000,
+                    action: <ToastAction altText="Close">Close</ToastAction>,
+                });
+            }
+        },
+    });
+
     function onSubmit(values: z.infer<typeof formSchema>) {
-        setIsSubmitting(true)
-        // Here you would typically send the withdrawal request to your backend
-        console.log(values)
-        setTimeout(() => {
-            setIsSubmitting(false)
-            // toast({
-            //     title: "Withdrawal Request Submitted",
-            //     description: `$${values.amount} will be sent to your ${values.method} account.`,
-            // })
-            form.reset()
-        }, 2000)
+        const request: DepositRequest = {
+            amount: Number(values.amount),
+            method: values.method,
+            accountDetails: values.accountDetails,
+        };
+
+        mutation.mutate(request);
     }
 
     return (

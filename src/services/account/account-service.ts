@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { AccountResponse, AccountSummaryResponse } from "./type";
+import { AccountResponse, AccountSummaryResponse, ApiDepositResponse, DepositRequest } from "./type";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_BACKEND_URL,
@@ -52,6 +52,20 @@ export const getAccountDetails = async (accessToken: string | undefined): Promis
 export const getAccountSummaries = async (accessToken: string | undefined): Promise<AccountSummaryResponse> => {
   const response: AxiosResponse<AccountSummaryResponse> = await axiosInstance.get<AccountSummaryResponse>(
     process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/accounts/get-account-summaries",
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const makeClientDeposit = async (accessToken: string | undefined, request: DepositRequest): Promise<ApiDepositResponse> => {
+  const response: AxiosResponse<ApiDepositResponse> = await axiosInstance.post<ApiDepositResponse>(
+    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/accounts/deposit",
+    request,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

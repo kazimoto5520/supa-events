@@ -9,6 +9,8 @@ import { ClientUpcomingEvents } from "@/components/dashboard/client/dashboard/cl
 import { ClientPopularEvents } from "@/components/dashboard/client/dashboard/client-popular-events"
 import { CalendarDateRangePicker } from "@/components/dashboard/client/dashboard/date-range-picker"
 import ClientCardStats from "@/components/dashboard/client/dashboard/client-card-stats"
+import BookDashboardEvents from "@/components/dashboard/client/dashboard/book-dashboard-events"
+import RecentDashboardBookings from "@/components/dashboard/client/dashboard/recent-dashboard-booking"
 
 export const metadata: Metadata = {
   title: "Dashboard | Client Portal",
@@ -46,12 +48,12 @@ export default function ClientDashboard() {
       <Tabs defaultValue="overview" className="space-y-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="upcoming">Upcoming Events</TabsTrigger>
+          {/* <TabsTrigger value="upcoming">Upcoming Events</TabsTrigger> */}
           <TabsTrigger value="bookings">My Bookings</TabsTrigger>
           <TabsTrigger value="discover">Discover</TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-7">
             <Card className="col-span-4">
               <CardHeader>
                 <CardTitle>Booking Activity</CardTitle>
@@ -61,41 +63,7 @@ export default function ClientDashboard() {
                 <Overview />
               </CardContent>
             </Card>
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Recent Bookings</CardTitle>
-                <CardDescription>Your most recent event bookings</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CLientRecentBookings />
-              </CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Upcoming Events</CardTitle>
-                <CardDescription>Events you{"'"}ve booked that are coming up</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ClientUpcomingEvents />
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" className="w-full">View All Upcoming Events</Button>
-              </CardFooter>
-            </Card>
-            <Card className="col-span-4">
-              <CardHeader>
-                <CardTitle>Popular in Your Area</CardTitle>
-                <CardDescription>Trending events near you</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ClientPopularEvents />
-              </CardContent>
-              <CardFooter>
-                <Button variant="outline" className="w-full">Explore More Events</Button>
-              </CardFooter>
-            </Card>
+            
           </div>
         </TabsContent>
         <TabsContent value="upcoming" className="space-y-4">
@@ -139,97 +107,10 @@ export default function ClientDashboard() {
           </Card>
         </TabsContent>
         <TabsContent value="bookings" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Booking History</CardTitle>
-              <CardDescription>All your past and upcoming event bookings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                    <div key={i} className="flex items-center gap-4 rounded-lg border p-4">
-                      <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-primary/10">
-                        <Ticket className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="flex-1 space-y-1">
-                        <h3 className="font-semibold">Tech Conference 202{i}</h3>
-                        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{i % 2 === 0 ? 'Upcoming' : 'Past'}: March {i * 3}, 202{i}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <CreditCard className="h-3 w-3" />
-                            <span>TZS {(i * 100).toFixed(2)}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Ticket className="h-3 w-3" />
-                            <span>{i} Ticket{i > 1 ? 's' : ''}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <Button variant={i % 2 === 0 ? "default" : "outline"} size="sm">
-                        {i % 2 === 0 ? 'Manage Booking' : 'View Details'}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <RecentDashboardBookings />
         </TabsContent>
         <TabsContent value="discover" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Discover Events</CardTitle>
-              <CardDescription>Find new events based on your interests</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Card key={i} className="overflow-hidden">
-                    <div className="aspect-video w-full bg-muted relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <img 
-                          src={`/placeholder.svg?height=200&width=400&text=Event+${i}`} 
-                          alt={`Event ${i}`}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                    <CardHeader className="p-4">
-                      <CardTitle className="text-lg">International Art Exhibition {i}</CardTitle>
-                      <CardDescription>A showcase of international artists</CardDescription>
-                    </CardHeader>
-                    <CardContent className="p-4 pt-0">
-                      <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-4">
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          <span>August {i * 5}, 2025</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          <span>Art Gallery, London</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          <span>{i * 100} attending</span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="font-bold">TZS {(50 + i * 10).toFixed(2)}</div>
-                        <Button size="sm">Book Now</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">Load More Events</Button>
-            </CardFooter>
-          </Card>
+          <BookDashboardEvents />
         </TabsContent>
       </Tabs>
     </div>

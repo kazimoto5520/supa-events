@@ -8,6 +8,7 @@ import { useState } from 'react'
 import Cookies from "js-cookie"
 import { useQuery } from '@tanstack/react-query'
 import { getAccountDetails, getAccountSummaries } from '@/services/account/account-service'
+import { formatMoney } from '@/lib/utils'
 
 export default function ClientPaymentsPage() {
     const [activeTab, setActiveTab] = useState("deposit")
@@ -60,7 +61,7 @@ export default function ClientPaymentsPage() {
                         <CardDescription>Current balance in your wallet</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <span className="text-xl font-bold">{account?.balance}</span>
+                        <span className="text-xl font-bold">{formatMoney(account?.balance, account?.currency)}</span>
                     </CardContent>
                 </Card>
             </div>

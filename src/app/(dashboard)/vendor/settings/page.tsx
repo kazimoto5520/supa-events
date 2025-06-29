@@ -57,11 +57,11 @@ const SettingsPage = () => {
               <form className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" placeholder="Your name" defaultValue="John Doe" />
+                  <Input id="name" placeholder="Your name" value={user?.data?.firstName + " " + user?.data?.lastName} />
                 </div>
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="Your email" defaultValue="john@example.com" />
+                  <Input id="email" type="email" placeholder="Your email" value={user?.data?.email} />
                 </div>
                 <Button type="submit" className="mt-2">Update Profile</Button>
               </form>

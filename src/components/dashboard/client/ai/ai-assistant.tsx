@@ -15,6 +15,8 @@ import { useChatMutation, useQuickQuestionMutation } from "@/hooks/use-ai-querie
 import { chatRequestSchema, } from "@/services/intelligence/validation"
 import { ChatRequest } from "@/services/intelligence/type"
 import Cookies from "js-cookie"
+import { useQuery } from "@tanstack/react-query"
+import { getUser } from "@/services/user/user-service"
 
 type Message = {
   id: string
@@ -30,7 +32,7 @@ interface AIAssistantProps {
 
 export function AIAssistant({ className }: AIAssistantProps) {
   const accessToken = Cookies.get("supa.events.co.tz.access");
-  const userId = Cookies.get("supa.events.co.tz.id") || "default_user_id"; // Fallback if user ID is not set
+  // const userId = Cookies.get("supa.events.co.tz.id") || "default_user_id"; // Fallback if user ID is not set
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -39,8 +41,17 @@ export function AIAssistant({ className }: AIAssistantProps) {
       timestamp: new Date(),
     },
   ])
-  
-  
+
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useQuery({
+    queryKey: ["get-user"],
+    queryFn: () => getUser(accessToken)
+  });
+
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // React Hook Form setup
@@ -48,7 +59,7 @@ export function AIAssistant({ className }: AIAssistantProps) {
     resolver: zodResolver(chatRequestSchema),
     defaultValues: {
       message: "",
-      userId: userId,
+      userId: user?.data?.rowId || "default_user_id", // Use user ID from query or fallback
     },
   })
 
@@ -132,15 +143,15 @@ export function AIAssistant({ className }: AIAssistantProps) {
     }
 
     setMessages((prev) => [...prev, userMessage])
-    
+
     // Send to API
     chatMutation.mutate({
       message: data.message,
-      userId: userId,
+      userId: user?.data?.rowId || "default_user_id", // Use user ID from query or fallback
     })
 
     // Reset form
-    form.reset({ message: "", userId: userId })
+    form.reset({ message: "", userId: user?.data?.rowId })
   }
 
   const handleQuickQuestion = (question: string) => {
@@ -153,11 +164,11 @@ export function AIAssistant({ className }: AIAssistantProps) {
     }
 
     setMessages((prev) => [...prev, userMessage])
-    
+
     // Send to API
     quickQuestionMutation.mutate({
       message: question,
-      userId: userId,
+      userId: user?.data?.rowId || "default_user_id", // Use user ID from query or fallback
     })
   }
 
@@ -176,7 +187,7 @@ export function AIAssistant({ className }: AIAssistantProps) {
         <h3 className="font-semibold">Event Assistant</h3>
         <p className="text-sm opacity-90">Ask me about events, bookings, and recommendations</p>
       </div>
-      
+
       {/* Error Alert */}
       {(chatMutation.isError || quickQuestionMutation.isError) && (
         <Alert variant="destructive" className="m-4 mb-0">
@@ -186,7 +197,7 @@ export function AIAssistant({ className }: AIAssistantProps) {
           </AlertDescription>
         </Alert>
       )}
-      
+
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4 mb-4">
           {messages.map((message) => (
@@ -194,8 +205,8 @@ export function AIAssistant({ className }: AIAssistantProps) {
               key={message.id}
               className={cn(
                 "flex items-start gap-3 rounded-lg p-3",
-                message.role === "user" 
-                  ? "ml-auto bg-primary text-primary-foreground max-w-[80%]" 
+                message.role === "user"
+                  ? "ml-auto bg-primary text-primary-foreground max-w-[80%]"
                   : "bg-muted max-w-[80%]",
               )}
             >
@@ -214,7 +225,7 @@ export function AIAssistant({ className }: AIAssistantProps) {
               </div>
             </div>
           ))}
-          
+
           {isLoading && (
             <div className="flex items-start gap-3 rounded-lg p-3 bg-muted max-w-[80%]">
               <div className="flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border bg-background">
@@ -281,9 +292,9 @@ export function AIAssistant({ className }: AIAssistantProps) {
                 </FormItem>
               )}
             />
-            <Button 
-              type="submit" 
-              size="icon" 
+            <Button
+              type="submit"
+              size="icon"
               disabled={isLoading || !form.watch("message")?.trim()}
             >
               {isLoading ? (

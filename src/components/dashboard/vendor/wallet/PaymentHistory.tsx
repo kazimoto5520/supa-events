@@ -12,6 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { AccountSummary } from '@/services/account/type'
+import { formatMoney } from '@/lib/utils'
 
 // Mock data (replace with actual data fetching in a real application)
 const mockPayments = [
@@ -58,7 +59,7 @@ export function PaymentHistory({ payments, isLoading, isError }: PaymentHistoryP
                     {filteredPayments?.map((payment) => (
                         <TableRow key={payment.rowId}>
                             <TableCell className="font-medium">{payment.rowId}</TableCell>
-                            <TableCell>TZS {Number(payment.totalDeposits.toFixed(2)) + Number(payment.totalWithdrawals.toFixed(2))}</TableCell>
+                            <TableCell>{formatMoney(Number(payment.totalDeposits.toFixed(2)), payment?.account?.currency)}</TableCell>
                             <TableCell>{payment.lastTransactionAt ? new Date(payment.lastTransactionAt).toLocaleDateString() : new Date().toLocaleDateString()}</TableCell>
                             <TableCell>
                                 <Badge variant={"success"}>

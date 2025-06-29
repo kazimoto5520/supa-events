@@ -137,57 +137,61 @@ export default function EventsPage() {
 
     return (
         <div className="space-y-8">
-            <h1 className="text-2xl font-bold">Bookings</h1>
+            <h1 className="text-2xl font-bold">Browse Events</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {events?.data.map((event) => (
-                    <Dialog
-                        key={event.rowId}
-                        open={selectedEventId === event.rowId}
-                        onOpenChange={(isOpen) => setSelectedEventId(isOpen ? event.rowId : null)}
-                    >
-                        <div className="border rounded-lg p-4 shadow">
-                            <img
-                                src={"/event1.jpg"}
-                                alt={event.name}
-                                className="w-full h-32 object-cover rounded"
-                            />
-                            <h2 className="text-lg font-semibold mt-2">{event.name}</h2>
-                            <p className="text-sm text-gray-600">{event.description}</p>
-                            <DialogTrigger asChild>
-                                <Button className="mt-4 w-full hover:bg-red-500">{formatMoney(event.amount)} </Button>
-                            </DialogTrigger>
-                        </div>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Book: {event.name}</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={form.handleSubmit(handleBookingSubmit)} className="space-y-4">
-                                <div>
-                                    <label htmlFor={`startDate-${event.rowId}`} className="block text-sm font-medium">
-                                        Start Date
-                                    </label>
-                                    <Input id={`startDate-${event.rowId}`} type="date" {...form.register("eventStartDate", { required: true })} />
-                                </div>
-                                <div>
-                                    <label htmlFor={`endDate-${event.rowId}`} className="block text-sm font-medium">
-                                        End Date
-                                    </label>
-                                    <Input id={`endDate-${event.rowId}`} type="date" {...form.register("eventEndDate", { required: true })} />
-                                </div>
-                                <div>
-                                    <label htmlFor={`time-${event.rowId}`} className="block text-sm font-medium">
-                                        Time
-                                    </label>
-                                    <Input id={`time-${event.rowId}`} type="time" {...form.register("eventTime", { required: true })} />
-                                </div>
-                                <Button type="submit" className="w-full" disabled={bookingMutation.isPending}>
-                                    {bookingMutation.isPending ? "Booking..." : "Book Event"}
-                                </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-                ))}
+                {events?.data.length === 0 ? (
+                    <p className="text-gray-500">No events available at the moment.</p>
+                ) : (
+                    events?.data.map((event) => (
+                        <Dialog
+                            key={event.rowId}
+                            open={selectedEventId === event.rowId}
+                            onOpenChange={(isOpen) => setSelectedEventId(isOpen ? event.rowId : null)}
+                        >
+                            <div className="border rounded-lg p-4 shadow">
+                                <img
+                                    src={"/event1.jpg"}
+                                    alt={event.name}
+                                    className="w-full h-32 object-cover rounded"
+                                />
+                                <h2 className="text-lg font-semibold mt-2">{event.name}</h2>
+                                <p className="text-sm text-gray-600">{event.description}</p>
+                                <DialogTrigger asChild>
+                                    <Button className="mt-4 w-full hover:bg-red-500">{formatMoney(event.amount)} </Button>
+                                </DialogTrigger>
+                            </div>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Book: {event.name}</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={form.handleSubmit(handleBookingSubmit)} className="space-y-4">
+                                    <div>
+                                        <label htmlFor={`startDate-${event.rowId}`} className="block text-sm font-medium">
+                                            Start Date
+                                        </label>
+                                        <Input id={`startDate-${event.rowId}`} type="date" {...form.register("eventStartDate", { required: true })} />
+                                    </div>
+                                    <div>
+                                        <label htmlFor={`endDate-${event.rowId}`} className="block text-sm font-medium">
+                                            End Date
+                                        </label>
+                                        <Input id={`endDate-${event.rowId}`} type="date" {...form.register("eventEndDate", { required: true })} />
+                                    </div>
+                                    <div>
+                                        <label htmlFor={`time-${event.rowId}`} className="block text-sm font-medium">
+                                            Time
+                                        </label>
+                                        <Input id={`time-${event.rowId}`} type="time" {...form.register("eventTime", { required: true })} />
+                                    </div>
+                                    <Button type="submit" className="w-full" disabled={bookingMutation.isPending}>
+                                        {bookingMutation.isPending ? "Booking..." : "Book Event"}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    ))
+                )}
             </div>
         </div>
     )

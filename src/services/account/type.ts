@@ -37,3 +37,18 @@ export interface AccountSummaryResponse {
     message: string;
     status: string;
 }
+
+export interface DepositRequest {
+    method: string;
+    amount: number;
+    accountDetails: string;
+}
+export interface DepositResponse {
+    message: string;
+    newBalance: string;
+}
+export interface ApiDepositResponse {
+    data: DepositResponse;
+    message: string;
+    status: string;
+}
