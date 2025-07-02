@@ -26,6 +26,7 @@ export interface Booking {
     paymentDate: string; // ISO string (Date in Java)
     quantity: number;
     totalAmount: string; // BigDecimal as string
+    paidAmount: string; // BigDecimal as string
     status: string;
     paymentReference: string;
     vendorId: string;
@@ -59,4 +60,9 @@ export interface BookingResponse {
     message: string;
     status: string;
     data: Booking[];
+}
+
+export interface PayEventRequest {
+    bookingId: string;
+    amount: number;
 }

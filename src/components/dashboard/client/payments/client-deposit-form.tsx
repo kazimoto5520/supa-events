@@ -25,7 +25,7 @@ import {
 import { ApiError } from '@/services/auth/type'
 import { ApiDepositResponse, DepositRequest } from '@/services/account/type'
 import { makeClientDeposit } from '@/services/account/account-service'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from '@/hooks/use-toast'
 import { ToastAction } from '@/components/ui/toast'
 import Cookies from "js-cookie"
@@ -43,6 +43,7 @@ const formSchema = z.object({
 const ClientDepositForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const accessToken = Cookies.get("supa.events.co.tz.access");
+    const queryClient = useQueryClient();
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -64,6 +65,9 @@ const ClientDepositForm = () => {
                 duration: 5000,
                 action: <ToastAction altText="Close">Close</ToastAction>,
             });
+
+            queryClient.invalidateQueries({ queryKey: ["account-details"] });
+            queryClient.invalidateQueries({ queryKey: ["account-summaries"] });
 
             form.reset();
             

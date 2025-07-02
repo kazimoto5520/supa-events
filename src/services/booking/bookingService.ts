@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { BookingRequest, BookingResponse, CreateBookingResponse } from "./type";
+import { BookingRequest, BookingResponse, CreateBookingResponse, PayEventRequest } from "./type";
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_BACKEND_URL,
@@ -75,3 +75,17 @@ export const getAllVendorBookings = async (accessToken: string | undefined): Pro
     );
     return response.data;
   };
+
+  export const payEventBooking = async (accessToken: string | undefined, request: PayEventRequest): Promise<CreateBookingResponse> => {
+  const response: AxiosResponse<CreateBookingResponse> = await axiosInstance.post<CreateBookingResponse>(
+    process.env.NEXT_PUBLIC_BASE_BACKEND_URL + "/clients/booking/pay",
+    request,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};

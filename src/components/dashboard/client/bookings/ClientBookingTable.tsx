@@ -33,10 +33,13 @@ import Cookies from "js-cookie";
 import { getAllBookings } from "@/services/booking/bookingService";
 import { Booking } from "@/services/booking/type";
 import { formatMoney } from "@/lib/utils";
+import PayEventDialog from "./pay-event-dialog";
 
 export default function ClientBookingTable() {
     const [rowSelection, setRowSelection] = React.useState({});
     const accessToken = Cookies.get("supa.events.co.tz.access");
+    const [opened, setOpened] = React.useState(false);
+    const [selectedBooking, setSelectedBooking] = React.useState<Booking | undefined>(undefined);
 
     const columns: ColumnDef<Booking>[] = [
         {
@@ -71,6 +74,11 @@ export default function ClientBookingTable() {
             accessorKey: "totalAmount",
             header: "Total Amount",
             cell: ({ row }) => <div>{formatMoney(parseFloat(row.original.totalAmount))}</div>,
+        },
+        {
+            accessorKey: "paidAmount",
+            header: "Paid Amount",
+            cell: ({ row }) => <div>{formatMoney(parseFloat(row.original.paidAmount))}</div>,
         },
         {
             accessorKey: "status",
@@ -138,7 +146,12 @@ export default function ClientBookingTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Pay</DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                setOpened(true);
+                                setSelectedBooking(row.original);
+                            }}
+                        >Pay</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),
@@ -274,6 +287,8 @@ export default function ClientBookingTable() {
                 </div>
 
             </div>
+
+            <PayEventDialog booking={selectedBooking} isOpen={opened} onClose={() => setOpened(false)}/>
         </div>
     );
 }

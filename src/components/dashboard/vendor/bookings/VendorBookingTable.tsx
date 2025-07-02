@@ -73,6 +73,11 @@ export default function VendorBookingTable() {
             cell: ({ row }) => <div>{formatMoney(parseFloat(row.original.totalAmount))}</div>,
         },
         {
+            accessorKey: "paidAmount",
+            header: "Paid Amount",
+            cell: ({ row }) => <div>{formatMoney(parseFloat(row.original.paidAmount))}</div>,
+        },
+        {
             accessorKey: "status",
             header: "Status",
             cell: ({ row }) => {
@@ -138,7 +143,7 @@ export default function VendorBookingTable() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Pay</DropdownMenuItem>
+                        <DropdownMenuItem>View</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             ),
