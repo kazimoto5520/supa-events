@@ -14,15 +14,6 @@ import { Input } from '@/components/ui/input'
 import { AccountSummary } from '@/services/account/type'
 import { formatMoney } from '@/lib/utils'
 
-// Mock data (replace with actual data fetching in a real application)
-const mockPayments = [
-    { id: 'TRX001', amount: 500, date: '2024-03-15', status: 'Completed' },
-    { id: 'TRX002', amount: 750, date: '2024-03-10', status: 'Pending' },
-    { id: 'TRX003', amount: 1000, date: '2024-03-05', status: 'Completed' },
-    { id: 'TRX004', amount: 250, date: '2024-02-28', status: 'Failed' },
-    { id: 'TRX005', amount: 1500, date: '2024-02-20', status: 'Completed' },
-]
-
 interface PaymentHistoryProps {
     payments: AccountSummary[] | undefined;
     isLoading: boolean;
@@ -32,10 +23,17 @@ interface PaymentHistoryProps {
 export function PaymentHistory({ payments, isLoading, isError }: PaymentHistoryProps) {
     const [searchTerm, setSearchTerm] = useState('')
 
-    const filteredPayments = Array.isArray(payments) ? payments.filter(payment =>
-        payment.rowId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        payment.lastTransactionAt?.includes(searchTerm)
-    ) : []
+    const filteredPayments = Array.isArray(payments)
+    ? payments
+        .filter(payment =>
+            payment.rowId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            payment.lastTransactionAt?.includes(searchTerm)
+        )
+        .sort((a, b) =>
+            new Date(b.lastTransactionAt).getTime() - new Date(a.lastTransactionAt).getTime()
+        )
+    : []
+
 
     return (
         <div className="space-y-4">
@@ -59,7 +57,7 @@ export function PaymentHistory({ payments, isLoading, isError }: PaymentHistoryP
                     {filteredPayments?.map((payment) => (
                         <TableRow key={payment.rowId}>
                             <TableCell className="font-medium">{payment.rowId}</TableCell>
-                            <TableCell>{formatMoney(Number(payment.totalDeposits.toFixed(2)), payment?.account?.currency)}</TableCell>
+                            <TableCell>{formatMoney((Number(payment.totalDeposits.toFixed(2)) + Number(payment.totalWithdrawals.toFixed(2))), payment?.account?.currency)}</TableCell>
                             <TableCell>{payment.lastTransactionAt ? new Date(payment.lastTransactionAt).toLocaleDateString() : new Date().toLocaleDateString()}</TableCell>
                             <TableCell>
                                 <Badge variant={"success"}>
